@@ -50,13 +50,13 @@ int main (void){
 	palabraImprimir(otraPalabra, stdout);
 	free(unaPalabra);
 	free(otraPalabra);
-	printf("%s\n","Test nodocrear y borrar");
+	printf("%s\n","Test nodo crear y borrar");
 
 	nodo* n = nodoCrear(palabraCopiar("Soy un nodo"));
 	printf("%s\n",n->palabra);
 	free(n->palabra);
 	nodoBorrar(n);
-	printf("%s\n","Test nodocrear y borrar");
+	printf("%s\n","Test oracion crear y borrar");
 	lista* ora = oracionCrear();
 	insertarAtras(ora, "uno");
 	insertarAtras(ora, "dos");
