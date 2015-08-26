@@ -57,7 +57,7 @@ int main (void){
 	free(n->palabra);
 	nodoBorrar(n);
 	printf("%s\n","Test nodocrear y borrar");
-	lista ora = oracionCrear();
+	lista* ora = oracionCrear();
 	insertarAtras(ora, "uno");
 	insertarAtras(ora, "dos");
 	insertarAtras(ora, "tres");
