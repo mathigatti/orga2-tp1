@@ -1,6 +1,48 @@
 
-; PALABRA
+; /** DEFINES **/    >> SE RECOMIENDA COMPLETAR LOS DEFINES CON LOS VALORES CORRECTOS
+	%define NULL 		0
+	%define TRUE 		1
+	%define FALSE 		0
+
+	%define LISTA_SIZE 	    	 8
+	%define OFFSET_PRIMERO 		 0
+
+	%define NODO_SIZE     		 16
+	%define OFFSET_SIGUIENTE   	 0
+	%define OFFSET_PALABRA 		 8
+	
+	%define LF					10
+
+
+section .rodata
+
+
+section .data
+
+
+section .text
+
+	extern rsi
+	extern fprintf
+	extern malloc
+	extern free
+
+
+
+
+;/** FUNCIONES DE PALABRAS **/
+;-----------------------------------------------------------
+
+
 	global palabraLongitud
+	global palabraMenor
+	global palabraFormatear
+	global palabraImprimir
+	global palabraCopiar
+
+
+; unsigned char palabraLongitud( char *p );
+;palabraLongitud:
 	section .text
 	palabraLongitud:
 	push rbp
@@ -17,8 +59,9 @@
 		mov rax, rsi
 	pop rbp
 	ret
-
-global palabraMenor
+	
+; bool palabraMenor( char *p1, char *p2 );
+;palabraMenor:
 	section .text
 	palabraMenor:
 	push rbp
@@ -47,8 +90,9 @@ global palabraMenor
 	pop rbp
 	ret
 
-global palabraFormatear
-	extern rsi
+
+; void palabraFormatear( char *p, void (*funcModificarString)(char*) );
+;palabraFormatear:
 	section .text
 	palabraFormatear:
 		push rbp
@@ -71,9 +115,10 @@ global palabraFormatear
 		pop rbp
 		mov rax, 0
 		ret
+; void palabraImprimir( char *p, FILE *file );
+;palabraImprimir:
 
-global palabraImprimir
-	extern fprintf
+
 	section .data:
 	msg1: DB '%s', 10, 0
 
@@ -88,11 +133,43 @@ global palabraImprimir
 		call fprintf
 		pop rbp
 		ret
-
-;global palabraCopiar
+; char *palabraCopiar( char *p );
+;palabraCopiar:
 	
+	section .text
+	palabraCopiar:
+		push rbp
+		mov  rbp, rsp
+		push r14
+		push r15 
+		mov r14, rdi ;tengo la palabra guardada
+		call palabraLongitud
+		add rax,1
+		mov r15,rax ;tengo la longitud guardada, con final de palabra inclusive
+		xor rdi, rdi
+		mov dil,al ;paso el tamaño de la palabra
+		call malloc
+		mov rsi,rax ;guardo el puntero a la palabra nueva
+		xor rdx,rdx
+		.ciclo:
+			cmp byte [r14],NULL
+			je .fin
+			mov dl,[r14]
+			mov [rsi],dl
+			add r14,1
+			add rsi,1
+			jmp .ciclo
+		.fin:
+		mov byte [rsi],NULL
+		pop r15
+		pop r14
+		pop rbp
+		ret ;en rax esta el puntero a la palabra, que ni lo toque
+		
 ; LISTA y NODO
 	global nodoCrear
+	
+	
 	global nodoBorrar
 	global oracionCrear
 	global oracionBorrar
@@ -108,71 +185,79 @@ global palabraImprimir
 	extern palabraIgual
 	extern insertarAtras
 
-; /** DEFINES **/    >> SE RECOMIENDA COMPLETAR LOS DEFINES CON LOS VALORES CORRECTOS
-	%define NULL 		0
-	%define TRUE 		0
-	%define FALSE 		0
-
-	%define LISTA_SIZE 	    	 0
-	%define OFFSET_PRIMERO 		 0
-
-	%define NODO_SIZE     		 0
-	%define OFFSET_SIGUIENTE   	 0
-	%define OFFSET_PALABRA 		 0
-
-
-section .rodata
-
-
-section .data
-
-
-section .text
-
-
-;/** FUNCIONES DE PALABRAS **/
-;-----------------------------------------------------------
-
-	; unsigned char palabraLongitud( char *p );
-	;palabraLongitud:
-		; COMPLETAR AQUI EL CODIGO
-
-	; bool palabraMenor( char *p1, char *p2 );
-	;palabraMenor:
-		; COMPLETAR AQUI EL CODIGO
-
-	; void palabraFormatear( char *p, void (*funcModificarString)(char*) );
-	;palabraFormatear:
-		; COMPLETAR AQUI EL CODIGO
-
-	; void palabraImprimir( char *p, FILE *file );
-	;palabraImprimir:
-		; COMPLETAR AQUI EL CODIGO
-
-	; char *palabraCopiar( char *p );
-	;palabraCopiar:
-		; COMPLETAR AQUI EL CODIGO
 
 
 ;/** FUNCIONES DE LISTA Y NODO **/
 ;-----------------------------------------------------------
+section .text
 
 	; nodo *nodoCrear( char *palabra );
 	nodoCrear:
-		; COMPLETAR AQUI EL CODIGO
-
+		push rbp
+		mov rbp, rsp
+		push r14
+		push r15
+		mov r15,rdi ;guardo la palabra
+		xor rdi,rdi
+		mov dil,16
+		call malloc
+		mov r14, rax ; guardo puntero a nodo
+		mov [r14 + OFFSET_PALABRA], r15
+		mov qword [r14],NULL
+		pop r15
+		pop r14
+		pop rbp
+		ret
 	; void nodoBorrar( nodo *n );
 	nodoBorrar:
+		push rbp
+		mov rbp, rsp
+		call free		
+		pop rbp
+		ret
 		; COMPLETAR AQUI EL CODIGO
 
 	; lista *oracionCrear( void );
 	oracionCrear:
-		; COMPLETAR AQUI EL CODIGO
-
+		push rbp
+		mov rbp, rsp
+		
+		xor rdi,rdi
+		mov dil, 8
+		call malloc
+		mov qword [rax + OFFSET_PRIMERO],NULL ;Que el primero sea null
+		pop rbp
+		ret	
 	; void oracionBorrar( lista *l );
 	oracionBorrar:
-		; COMPLETAR AQUI EL CODIGO
-
+		push rbp
+		mov rbp, rsp
+		push r15
+		push r14
+		push r13
+		cmp qword [rdi + OFFSET_PRIMERO],NULL
+			je .fin
+		lea r14,[rdi + OFFSET_PRIMERO] ;guardo el puntero al primer nodo
+		
+		.ciclo:
+			cmp qword [r14+OFFSET_SIGUIENTE],NULL ;me fijo si el siguiente es null
+			je .fin
+			mov r13,[r14+OFFSET_SIGUIENTE]; guardo el puntero al nodo siguiente
+			mov rdi,r14; preparo para borrar el nodo actual
+			call nodoBorrar
+			mov r14,r13
+			jmp .ciclo
+		.fin:
+		mov rdi,r14
+		call nodoBorrar
+		
+		push r13
+		push r14
+		push r13
+		pop rbp
+		ret
+		
+		
 	; void oracionImprimir( lista *l, char *archivo, void (*funcImprimirPalabra)(char*,FILE*) );
 	oracionImprimir:
 		; COMPLETAR AQUI EL CODIGO
