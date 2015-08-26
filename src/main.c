@@ -19,6 +19,7 @@ int main (void){
 	if( palabraMenor( "hola", "hola" ) )
 		printf( "TRUE\n" ); else printf( "FALSE\n" );
 	printf("%s\n","Test palabraFormato");
+	printf("\n");
 	char var[] = "Uno";
 	printf("%s\n",var);
 	fTest(var);
@@ -31,6 +32,8 @@ int main (void){
 	printf("%s\n",var2);
 
 	printf("%s\n","Test palabraImprimir");
+	printf("\n");
+		
 	FILE *f = fopen("asd.txt","w");
 	char *text = "Mensaje que deberia imprimirse";
 	palabraImprimir(text,f);
@@ -38,6 +41,8 @@ int main (void){
 	fclose(f);
 	
 	printf("%s\n","Test palabraCopiar");
+	printf("\n");
+
 	char* unaPalabra = palabraCopiar("Veintiocho");
 	char* otraPalabra = palabraCopiar(unaPalabra);
 	unaPalabra[1] = 'X';
@@ -45,7 +50,18 @@ int main (void){
 	palabraImprimir(otraPalabra, stdout);
 	free(unaPalabra);
 	free(otraPalabra);
-	
+	printf("%s\n","Test nodocrear y borrar");
+
+	nodo* n = nodoCrear(palabraCopiar("Soy un nodo"));
+	printf("%s\n",n->palabra);
+	free(n->palabra);
+	nodoBorrar(n);
+	printf("%s\n","Test nodocrear y borrar");
+	lista ora = oracionCrear();
+	insertarAtras(ora, "uno");
+	insertarAtras(ora, "dos");
+	insertarAtras(ora, "tres");
+	oracionBorrar(ora);
 	return 0;
 
 	
