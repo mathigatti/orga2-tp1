@@ -2,7 +2,9 @@
 
 
 /** Funciones Auxiliares ya implementadas en C **/
-						
+
+extern nodo *nodoCrear( char *palabra );
+
 bool palabraIgual( char *p1, char *p2 ){
    int i = 0;
    while( p1[i] == p2[i] ){
@@ -15,8 +17,6 @@ bool palabraIgual( char *p1, char *p2 ){
    else
       return false;
 }
-
-
 
 void insertarAtras( lista *l, char *palabra ){
     nodo *nuevoNodo = nodoCrear( palabra );
@@ -32,22 +32,18 @@ void insertarAtras( lista *l, char *palabra ){
 
 // Mis funciones
 
-extern unsigned char palabraLongitud( char *p );
-extern bool palabraMenor( char *p1, char *p2 );
-extern void palabraFormatear( char *p, void (*funcModificarString)(char*) );
-void palabraImprimir( char *p, FILE *file );
-
+/*
 char* palabraCopiar( char* p ){
 	int i = 0;
 	int n = palabraLongitud(p);
-	char* res = (char*)malloc(sizeof(char)*n);
-	while(n>i){
+	char* res = malloc(sizeof(char)*(n+1));
+	while(n>=i){
 		res[i] = p[i];
 		i++;	
 	}
 	return res;
 }
-/*
+
 unsigned char palabraLongitud( char *p ){
 	int i = 0;	
 	while( p[i] != 0){
