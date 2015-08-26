@@ -16,19 +16,20 @@
 
 /** Funciones de palabras **/
 
-	unsigned char palabraLongitud( char *p );
-	bool palabraMenor( char *p1, char *p2 );
-	void palabraFormatear( char *p, void (*funcModificarString)(char*) );
-	void palabraImprimir( char *p, FILE *file );
-	char *palabraCopiar( char *p );
+extern unsigned char palabraLongitud( char *p );
+extern bool palabraMenor( char *p1, char *p2 );
+extern void palabraFormatear( char *p, void (*funcModificarString)(char*) );
+extern void palabraImprimir( char *p, FILE *file );
+extern char *palabraCopiar( char *p );
 
-	void fTest(char *p);
+void fTest(char *p);
 
 /** Funciones de lista y nodo **/
 
 
 
-	nodo *nodoCrear( char *palabra );
+nodo *nodoCrear( char *palabra );
+	
 	void nodoBorrar( nodo *n );
 	lista *oracionCrear( void );
 	void oracionBorrar( lista *l );
