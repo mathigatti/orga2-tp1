@@ -1,5 +1,40 @@
 
-; /** DEFINES **/    >> SE RECOMIENDA COMPLETAR LOS DEFINES CON LOS VALORES CORRECTOS
+
+; PALABRA
+
+	global palabraLongitud
+	global palabraMenor
+	global palabraFormatear
+	global palabraImprimir
+	global palabraCopiar
+	
+		
+; LISTA y NODO
+	global nodoCrear
+	global nodoBorrar
+	global oracionCrear
+	global oracionBorrar
+	global oracionImprimir
+
+; AVANZADAS
+	global longitudMedia
+;	global insertarOrdenado
+;	global filtrarPalabra
+;	global descifrarMensajeDiabolico
+
+
+; YA IMPLEMENTADAS EN C
+	extern palabraIgual
+	extern insertarAtras
+	extern fprintf
+	extern malloc
+	extern free
+	extern fclose
+	extern fopen
+
+
+
+; /** DEFINES **/ 
 	%define NULL 		0
 	%define TRUE 		1
 	%define FALSE 		0
@@ -18,32 +53,21 @@ section .rodata
 
 
 section .data
+	msg1: DB '%s', 10, 0
+	msg2:	DB 'w',10
+
+
 
 
 section .text
-
-	extern rsi
-	extern fprintf
-	extern malloc
-	extern free
-
-
 
 
 ;/** FUNCIONES DE PALABRAS **/
 ;-----------------------------------------------------------
 
 
-	global palabraLongitud
-	global palabraMenor
-	global palabraFormatear
-	global palabraImprimir
-	global palabraCopiar
-
-
 ; unsigned char palabraLongitud( char *p );
-;palabraLongitud:
-	section .text
+
 	palabraLongitud:
 	push rbp
 	mov rbp, rsp
@@ -61,8 +85,7 @@ section .text
 	ret
 	
 ; bool palabraMenor( char *p1, char *p2 );
-;palabraMenor:
-	section .text
+
 	palabraMenor:
 	push rbp
 	mov rbp, rsp
@@ -92,8 +115,7 @@ section .text
 
 
 ; void palabraFormatear( char *p, void (*funcModificarString)(char*) );
-;palabraFormatear:
-	section .text
+
 	palabraFormatear:
 		push rbp
 		mov rbp, rsp
@@ -116,13 +138,8 @@ section .text
 		mov rax, 0
 		ret
 ; void palabraImprimir( char *p, FILE *file );
-;palabraImprimir:
 
 
-	section .data:
-	msg1: DB '%s', 10, 0
-
-	section .text
 	palabraImprimir:
 		push rbp
 		mov rbp, rsp
@@ -133,10 +150,10 @@ section .text
 		call fprintf
 		pop rbp
 		ret
+		
 ; char *palabraCopiar( char *p );
-;palabraCopiar:
+
 	
-	section .text
 	palabraCopiar:
 		push rbp
 		mov  rbp, rsp
@@ -165,31 +182,10 @@ section .text
 		pop r14
 		pop rbp
 		ret ;en rax esta el puntero a la palabra, que ni lo toque
-		
-; LISTA y NODO
-	global nodoCrear
-	
-	
-	global nodoBorrar
-	global oracionCrear
-	global oracionBorrar
-	global oracionImprimir
-
-; AVANZADAS
-	global longitudMedia
-	global insertarOrdenado
-	global filtrarPalabra
-	global descifrarMensajeDiabolico
-
-; YA IMPLEMENTADAS EN C
-	extern palabraIgual
-	extern insertarAtras
-
 
 
 ;/** FUNCIONES DE LISTA Y NODO **/
 ;-----------------------------------------------------------
-section .text
 
 	; nodo *nodoCrear( char *palabra );
 	nodoCrear:
@@ -215,7 +211,6 @@ section .text
 		call free		
 		pop rbp
 		ret
-		; COMPLETAR AQUI EL CODIGO
 
 	; lista *oracionCrear( void );
 	oracionCrear:
@@ -223,24 +218,34 @@ section .text
 		mov rbp, rsp
 		
 		xor rdi,rdi
-		mov dil, 8
+		mov dil, LISTA_SIZE
 		call malloc
 		mov qword [rax + OFFSET_PRIMERO],NULL ;Que el primero sea null
 		pop rbp
 		ret	
+		
 	; void oracionBorrar( lista *l );
+
+	;r15 = puntero a la lista
+	;r14 = puntero al nodo actual
+	;r13 = puntero al siguiente
 	oracionBorrar:
 		push rbp
 		mov rbp, rsp
 		push r15
 		push r14
 		push r13
-		cmp qword [rdi + OFFSET_PRIMERO],NULL
+		sub rsp,8
+		mov r15,rdi
+		cmp qword [r15 + OFFSET_PRIMERO],NULL
 			je .fin
-		lea r14,[rdi + OFFSET_PRIMERO] ;guardo el puntero al primer nodo
-		
+		mov r14,[r15 + OFFSET_PRIMERO] ;guardo el puntero al primer nodo
+		mov r13,[r14 + OFFSET_SIGUIENTE] ;guardo el puntero al siguiente
+		mov rdi,r14
+		call nodoBorrar ;borro al primero
+		mov r14, r13; r14 ahora apunta al segundo nodo
 		.ciclo:
-			cmp qword [r14+OFFSET_SIGUIENTE],NULL ;me fijo si el siguiente es null
+			cmp qword r14,NULL ;me fijo si es null
 			je .fin
 			mov r13,[r14+OFFSET_SIGUIENTE]; guardo el puntero al nodo siguiente
 			mov rdi,r14; preparo para borrar el nodo actual
@@ -248,27 +253,86 @@ section .text
 			mov r14,r13
 			jmp .ciclo
 		.fin:
-		mov rdi,r14
-		call nodoBorrar
-		
-		push r13
-		push r14
-		push r13
+		mov rdi,r15
+		call free
+		add rsp,8
+		pop r13
+		pop r14
+		pop r15
 		pop rbp
 		ret
 		
-		
 	; void oracionImprimir( lista *l, char *archivo, void (*funcImprimirPalabra)(char*,FILE*) );
 	oracionImprimir:
-		; COMPLETAR AQUI EL CODIGO
+		push rbp
+		mov rbp, rsp
+		push r13
+		push r14
+		push r15
+		sub rsp, 8		
+		mov r13, [rdi + OFFSET_PRIMERO] ;r13 = puntero al primero
+		mov rdi, rsi
+		mov rsi, msg2
+		mov r15, rdx ;guardo la funcionImprimir
+		call fopen
+		mov r14,rax ;guardo el puntero al archivo
+		.ciclo:
+			cmp r13,NULL
+			je .fin
+			mov rdi, [r13+OFFSET_PALABRA]
+			mov rsi, r14
+			call r15
+			mov r13, [r13+OFFSET_SIGUIENTE]
+			jmp .ciclo
+		.fin:
+			mov rdi,r14
+			call fclose
+		add rsp, 8
+		pop r15
+		pop r14
+		pop r13
+		pop rbp
+		ret
 
 
 ;/** FUNCIONES AVANZADAS **/
 ;-----------------------------------------------------------
+; inputs: rdi, rsi, rdx, rcx, r8, r9
+; preservar: r12, r13, r14, r15, rbx, 
+; la pila: rbp, rsp
+; devolver por rax o xmmo 
+; inputs floats: xmm0, xmm1, ..., xmm7
 
 	; float longitudMedia( lista *l );
 	longitudMedia:
-		; COMPLETAR AQUI EL CODIGO
+	push rbp
+	mov rbp, rsp
+	push r12
+	push r13
+	push r14
+	
+	xor r12, r12 ; logitud
+	xor r13, r13 ; contador
+	mov r14,[rdi + OFFSET_PRIMERO] ; nodo actual
+	.ciclo:
+		cmp r14,NULL
+		je .fin
+		mov rdi, [r14+OFFSET_PALABRA]
+		call palabraLongitud
+		add r12,rax
+		add r13,1
+		mov r14, [r14+OFFSET_SIGUIENTE]
+		
+	.fin:			
+	mov rax,r13
+	div r12
+	
+	pop r14
+	pop r13
+	pop r12
+	pop rbp
+	ret
+
 
 	; void insertarOrdenado( lista *l, char *palabra, bool (*funcCompararPalabra)(char*,char*) );
 	insertarOrdenado:
@@ -281,3 +345,5 @@ section .text
 	; void descifrarMensajeDiabolico( lista *l, char *archivo, void (*funcImpPbr)(char*,FILE* ) );
 	descifrarMensajeDiabolico:
 		; COMPLETAR AQUI EL CODIGO
+		
+		

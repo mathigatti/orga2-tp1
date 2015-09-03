@@ -56,12 +56,73 @@ int main (void){
 	printf("%s\n",n->palabra);
 	free(n->palabra);
 	nodoBorrar(n);
+	
+	
 	printf("%s\n","Test oracion crear y borrar");
+	printf("\n");
+	
 	lista* ora = oracionCrear();
 	insertarAtras(ora, "uno");
 	insertarAtras(ora, "dos");
 	insertarAtras(ora, "tres");
 	oracionBorrar(ora);
+	lista* ora2 = oracionCrear();
+	oracionBorrar(ora2);
+	lista* ora3 = oracionCrear();
+	insertarAtras(ora3, "uno");
+	oracionBorrar(ora3);
+	
+	printf("%s\n","Test oracionImprimir");
+	printf("\n");
+
+	void (*funcImprimir)(char*,FILE*);
+	funcImprimir = &palabraImprimir;
+	lista* ora4 = oracionCrear();
+	insertarAtras(ora4, "uno");
+	insertarAtras(ora4, "tres");
+	insertarAtras(ora4, "cinco");
+	oracionImprimir(ora4,"asd.txt", funcImprimir);
+	oracionBorrar(ora4);
+
+	printf("%s\n","Test oracionLongitud");
+	printf("\n");
+	
+	lista *miLista = oracionCrear();
+	insertarAtras( miLista, "uno" );
+	insertarAtras( miLista, "do" );
+	
+	lista *miLista2 = oracionCrear();
+	insertarAtras( miLista2, "cuatro" );
+	insertarAtras( miLista2, "tres" );
+	insertarAtras( miLista2, "ochenta y dos");
+
+	printf( "LongMedia = %2.5f\n", longitudMedia (miLista));
+	printf( "LongMedia = %2.5f\n", longitudMedia (miLista2));
+	
+	oracionBorrar(miLista);
+	oracionBorrar(miLista2);
+
+	printf("\n");
+	printf("%s\n","Test insertarOrdenado ver en asd.txt");
+	printf("\n");
+
+	bool (*funcMenor)(char*,char*);
+	funcMenor = &palabraMenor;
+
+	lista *miLista3 = oracionCrear();
+	insertarOrdenado(miLista3, "zeta", funcMenor);
+	insertarOrdenado(miLista3, "casa", funcMenor);
+	insertarOrdenado(miLista3, "acasa", funcMenor);
+	insertarOrdenado(miLista3, "bebe", funcMenor);
+		
+	oracionImprimir(miLista3,"asd.txt", funcImprimir);
+	oracionBorrar(miLista3);
+
+	printf("\n");
+	printf("%s\n","Test filtrarPalabra");
+	printf("\n");
+	
+	
 	return 0;
 
 	

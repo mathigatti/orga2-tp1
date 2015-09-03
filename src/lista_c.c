@@ -3,8 +3,6 @@
 
 /** Funciones Auxiliares ya implementadas en C **/
 
-extern nodo *nodoCrear( char *palabra );
-
 bool palabraIgual( char *p1, char *p2 ){
    int i = 0;
    while( p1[i] == p2[i] ){
@@ -30,9 +28,92 @@ void insertarAtras( lista *l, char *palabra ){
 	nodoActual->siguiente = nuevoNodo;
 }
 
+
+
+void insertarOrdenado( lista *l, char *palabra, bool (*funcCompararPalabra)(char*,char*) ){
+	nodo* actual = l->primero;
+	if(actual == NULL){
+		insertarAtras(l,palabra);
+	}
+	else{
+		if(funcCompararPalabra(palabra, actual->palabra)){
+		nodo* nuevo = nodoCrear(palabra);
+		nuevo->siguiente = actual;
+		l->primero = nuevo;	
+		}
+		else{
+			int i = 0;
+			while(i != 1 && actual->siguiente != NULL){
+				if (funcCompararPalabra(palabra, (actual->siguiente)->palabra)){
+						nodo* nuevo = nodoCrear(palabra);
+						nuevo->siguiente = actual->siguiente;
+						actual->siguiente = nuevo;
+						i = 1;		
+				}
+				actual = actual->siguiente;
+			}
+			if( i != 1){
+				insertarAtras(l, palabra);
+			}
+		}
+	}
+}
+
+
+//	void filtrarPalabra( lista *l, bool (*funcCompararPalabra)(char*,char*), char *palabraCmp );
+//	void descifrarMensajeDiabolico( lista *l, char *archivo, void (*funcImpPbr)(char*,FILE* ) );
+
+
+
 // Mis funciones
 
 /*
+
+float longitudMedia( lista *l ){
+	nodo* actual = l->primero;
+	unsigned char longitud = 0;
+	int i = 0;
+	while(actual != NULL){
+		longitud = longitud + palabraLongitud(actual->palabra);
+		i = i + 1;
+		actual = actual->siguiente;
+	}
+	return (float)longitud/(float)i;
+}
+
+
+void oracionImprimir( lista *l, char *archivo, void (*funcImprimirPalabra)(char*,FILE*) ){
+	nodo* proximo = l->primero;
+	FILE *archi = fopen(archivo,"w");
+	while(proximo != NULL){
+		(*funcImprimirPalabra)(proximo->palabra, archi); 
+		proximo = proximo->siguiente;
+		}	
+	fclose(archi);
+}
+
+
+
+void oracionBorrar( lista *l ){
+	nodo* aux;
+	nodo* prox = l->primero;
+	if(l->primero == NULL){
+		free(l);
+		}
+	else{
+		aux = prox->siguiente;
+		nodoBorrar(prox);
+		prox = aux;
+		while(prox != NULL){
+			aux = prox->siguiente;
+			nodoBorrar(prox);
+			prox = aux;
+			}
+		free(l);
+		}
+	}
+
+
 char* palabraCopiar( char* p ){
 	int i = 0;
 	int n = palabraLongitud(p);

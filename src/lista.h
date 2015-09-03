@@ -27,13 +27,11 @@ void fTest(char *p);
 /** Funciones de lista y nodo **/
 
 
-
-nodo *nodoCrear( char *palabra );
-	
-	void nodoBorrar( nodo *n );
-	lista *oracionCrear( void );
-	void oracionBorrar( lista *l );
-	void oracionImprimir( lista *l, char *archivo, void (*funcImprimirPalabra)(char*,FILE*) );
+extern	nodo *nodoCrear( char *palabra );
+extern	void nodoBorrar( nodo *n );
+extern	lista *oracionCrear( void );
+extern	void oracionBorrar( lista *l );
+extern void oracionImprimir( lista *l, char *archivo, void (*funcImprimirPalabra)(char*,FILE*) );
 
 
 /** Funciones Avanzadas **/
