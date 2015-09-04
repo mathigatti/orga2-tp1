@@ -33,36 +33,6 @@ void fTest(char *p){
 }
 
 
-void insertarOrdenado( lista *l, char *palabra, bool (*funcCompararPalabra)(char*,char*) ){
-	nodo* actual = l->primero;
-	if(actual == NULL){
-		insertarAtras(l,palabra);
-	}
-	else{
-		if(funcCompararPalabra(palabra, actual->palabra)){
-		nodo* nuevo = nodoCrear(palabra);
-		nuevo->siguiente = actual;
-		l->primero = nuevo;	
-		}
-		else{
-			int i = 0;
-			while(i != 1 && actual->siguiente != NULL){
-				if (funcCompararPalabra(palabra, (actual->siguiente)->palabra)){
-						nodo* nuevo = nodoCrear(palabra);
-						nuevo->siguiente = actual->siguiente;
-						actual->siguiente = nuevo;
-						i = 1;		
-				}
-				actual = actual->siguiente;
-			}
-			if( i != 1){
-				insertarAtras(l, palabra);
-			}
-		}
-	}
-}
-
-
 // Mis funciones
 
 /*
@@ -92,7 +62,34 @@ void filtrarPalabra( lista *l, bool (*funcCompararPalabra)(char*,char*), char *p
 	}	
 }
 
-
+void insertarOrdenado( lista *l, char *palabra, bool (*funcCompararPalabra)(char*,char*) ){
+	nodo* actual = l->primero;
+	if(actual == NULL){
+		insertarAtras(l,palabra);
+	}
+	else{
+		if(funcCompararPalabra(palabra, actual->palabra)){
+		nodo* nuevo = nodoCrear(palabra);
+		nuevo->siguiente = actual;
+		l->primero = nuevo;	
+		}
+		else{
+			int i = 0;
+			while(i != 1 && actual->siguiente != NULL){
+				if (funcCompararPalabra(palabra, (actual->siguiente)->palabra)){
+						nodo* nuevo = nodoCrear(palabra);
+						nuevo->siguiente = actual->siguiente;
+						actual->siguiente = nuevo;
+						i = 1;		
+				}
+				actual = actual->siguiente;
+			}
+			if( i != 1){
+				insertarAtras(l, palabra);
+			}
+		}
+	}
+}
 
 
 float longitudMedia( lista *l ){

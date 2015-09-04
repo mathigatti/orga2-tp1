@@ -1,4 +1,11 @@
-acasa
-bebe
+Mensaje que deberia imprimirse
+uno
+tres
+cinco
 casa
 zeta
+
+tres
+tres
+dos
+uno

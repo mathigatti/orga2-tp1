@@ -1,0 +1,18 @@
+>>>>>>>>>>>>>>>> PROBANDO INSERTAR-ORDENADO y ORACION-IMPRIMIR
+Abelu
+Agustina
+>>>>>>>>>>>>>>>> PROBANDO LONGITUD-MEDIA
+longitudMedia: 6.50000
+>>>>>>>>>>>>>>>> PROBANDO PALABRA-FILTRAR
+Abelu
+Juana
+Ana
+Ana
+>>>>>>>>>>>>>>>> PROBANDO MENSAJE DIABOLICO
+hola2
+hola1
+<sinMensajeDiabolico>
+
+>>>>>>>>>>>>>>>> PROBANDO ORACION-BORRAR
+hola1
+hola2

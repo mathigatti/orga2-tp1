@@ -18,9 +18,9 @@
 
 ; AVANZADAS
 	global longitudMedia
-	global insertarOrdenado
-;	global filtrarPalabra
-;	global descifrarMensajeDiabolico
+;	global insertarOrdenado
+	global filtrarPalabra
+	global descifrarMensajeDiabolico
 
 
 ; YA IMPLEMENTADAS EN C
@@ -54,7 +54,8 @@ section .rodata
 
 section .data
 	msg1: DB '%s', 10, 0
-	msg2:	DB 'w',10
+	msg2: DB 'a',0
+	msg3: DB '<sinMensajeDiabolico>', 10, 0
 
 
 
@@ -143,11 +144,13 @@ section .text
 	palabraImprimir:
 		push rbp
 		mov rbp, rsp
+		
 		mov rdx, rdi
 		mov rdi, rsi
 		mov rsi, msg1
 		mov rax, 0
 		call fprintf
+		
 		pop rbp
 		ret
 		
@@ -208,7 +211,15 @@ section .text
 	nodoBorrar:
 		push rbp
 		mov rbp, rsp
-		call free		
+		push r12
+		sub rsp,8
+		mov r12,rdi
+		mov rdi,[rdi+OFFSET_PALABRA]
+		call free
+		mov rdi,r12
+		call free
+		add rsp,8
+		pop r12		
 		pop rbp
 		ret
 
@@ -336,11 +347,6 @@ section .text
 	pop rbp
 	ret
 
-; inputs: rdi, rsi, rdx, rcx, r8, r9
-; preservar: r12, r13, r14, r15, rbx, 
-; la pila: rbp, rsp
-; devolver por rax o xmmo 
-; inputs floats: xmm0, xmm1, ..., xmm7
 
 	; void insertarOrdenado( lista *l, char *palabra, bool (*funcCompararPalabra)(char*,char*) );
 insertarOrdenado:
@@ -417,10 +423,136 @@ insertarOrdenado:
 	
 	; void filtrarAltaLista( lista *l, bool (*funcCompararPalabra)(char*,char*), char *palabraCmp );
 	filtrarPalabra:
-		; COMPLETAR AQUI EL CODIGO
+	push rbp
+	mov rbp, rsp
+	push r12 ; actual
+	push r13 ; anterior
+	push r14 ; funcCompararPalabra
+	push r15 ; palabraCmp
+	push rbx ; la lista
+	sub rsp, 8
+	mov r12, [rdi + OFFSET_PRIMERO]
+	mov r13, [rdi + OFFSET_PRIMERO]
+	mov r14, rsi
+	mov r15, rdx
+	mov rbx, rdi
+
+	
+	.ciclo:
+	cmp r12, NULL
+	je .fin
+	mov rdi, [r12+OFFSET_PALABRA]
+	mov rsi, r15
+	call r14 ; llamo para comparar
+	cmp rax, TRUE
+	je .siguiente
+	cmp r12,[rbx+OFFSET_PRIMERO]
+	je .esPrimero
+	mov r12,[r12+OFFSET_SIGUIENTE]
+	mov rdi, [r13+OFFSET_SIGUIENTE]
+	call nodoBorrar
+	mov [r13+OFFSET_SIGUIENTE],r12	
+	jmp .ciclo
+	.esPrimero:
+	mov r12,[r12+OFFSET_SIGUIENTE]
+	mov rdi,r13
+	call nodoBorrar
+	mov r13,r12
+	mov [rbx+OFFSET_PRIMERO],r12
+	jmp .ciclo
+	.siguiente:
+	mov r13,r12
+	mov r12,[r12+OFFSET_SIGUIENTE]
+	jmp .ciclo
+
+	.fin:
+	add rsp,8
+	pop rbx
+	pop r15
+	pop r14
+	pop r13
+	pop r12
+	pop rbp
+	ret
+
+
+
+; inputs: rdi, rsi, rdx, rcx, r8, r9
+; preservar: r12, r13, r14, r15, rbx, 
+; la pila: rbp, rsp
+; devolver por rax o xmmo 
+; inputs floats: xmm0, xmm1, ..., xmm7
 
 	; void descifrarMensajeDiabolico( lista *l, char *archivo, void (*funcImpPbr)(char*,FILE* ) );
 	descifrarMensajeDiabolico:
-		; COMPLETAR AQUI EL CODIGO
-		
+	push rbp
+	mov rbp, rsp
+	push r12 ; la lista y despues lo uso como puntero al primero de la pila
+	push r13 ; archivo
+	push r14 ; funcImpPbr
+	push r15 ; contador
+	push rbx ; actual
+	sub	rsp, 8
+	
+	mov r12, rdi
+	mov r13, rsi
+	mov r14, rdx
+	mov rbx,[r12+OFFSET_PRIMERO]
+	xor r15, r15
+	mov r12, rsp
+
+	
+	mov rdi,r13
+	mov rsi,msg2
+	call fopen
+	mov r13,rax
+	
+	cmp rbx,NULL
+	je .sinMensaje
+	.ciclo:
+	mov rsi, [rbx+OFFSET_PALABRA]
+	push rsi 
+	add r15,1
+	mov rbx,[rbx+OFFSET_SIGUIENTE]
+	cmp rbx,NULL
+	je .imprimir
+	jmp .ciclo
+	
+	.imprimir:
+	cmp r12,rsp
+	je .fin
+	test r15,1 ; ver si es par, o sea si esta alineada la pila
+	je .noAlineada
+	.alineada:
+	mov rdi,[rsp]
+	mov rsi,r13
+	call r14
+	pop rdx
+	sub r15,1
+	jmp .imprimir
+	
+	.noAlineada:
+	pop rdi
+	mov rsi,r13
+	call r14
+	sub r15,1
+	jmp .imprimir
+	
+	.sinMensaje:
+	mov rdi, msg3
+	mov rsi, r13
+	call r14
+	
+	.fin:
+	mov rdi, r13
+	call fclose
+	
+	add rsp,8
+	pop rbx
+	pop r15
+	pop r14
+	pop r13
+	pop r12
+	pop rbp
+	ret		
 		

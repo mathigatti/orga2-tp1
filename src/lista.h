@@ -22,7 +22,7 @@ extern void palabraFormatear( char *p, void (*funcModificarString)(char*) );
 extern void palabraImprimir( char *p, FILE *file );
 extern char *palabraCopiar( char *p );
 
-void fTest(char *p);
+void fTest(char *p); // cambia el primer caracter de una palabra por una b
 
 /** Funciones de lista y nodo **/
 
@@ -37,9 +37,9 @@ extern void oracionImprimir( lista *l, char *archivo, void (*funcImprimirPalabra
 /** Funciones Avanzadas **/
 
 extern	float longitudMedia( lista *l );
-extern	void insertarOrdenado( lista *l, char *palabra, bool (*funcCompararPalabra)(char*,char*) );
-	void filtrarPalabra( lista *l, bool (*funcCompararPalabra)(char*,char*), char *palabraCmp );
-	void descifrarMensajeDiabolico( lista *l, char *archivo, void (*funcImpPbr)(char*,FILE* ) );
+void insertarOrdenado( lista *l, char *palabra, bool (*funcCompararPalabra)(char*,char*) );
+extern	void filtrarPalabra( lista *l, bool (*funcCompararPalabra)(char*,char*), char *palabraCmp );
+extern	void descifrarMensajeDiabolico( lista *l, char *archivo, void (*funcImpPbr)(char*,FILE* ) );
 
 
 /** Funciones Auxiliares ya implementadas en C **/

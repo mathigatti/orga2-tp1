@@ -54,7 +54,6 @@ int main (void){
 
 	nodo* n = nodoCrear(palabraCopiar("Soy un nodo"));
 	printf("%s\n",n->palabra);
-	free(n->palabra);
 	nodoBorrar(n);
 	
 	
@@ -62,14 +61,14 @@ int main (void){
 	printf("\n");
 	
 	lista* ora = oracionCrear();
-	insertarAtras(ora, "uno");
-	insertarAtras(ora, "dos");
-	insertarAtras(ora, "tres");
+	insertarAtras(ora, palabraCopiar("uno"));
+	insertarAtras(ora, palabraCopiar("dos"));
+	insertarAtras(ora, palabraCopiar("tres"));
 	oracionBorrar(ora);
 	lista* ora2 = oracionCrear();
 	oracionBorrar(ora2);
 	lista* ora3 = oracionCrear();
-	insertarAtras(ora3, "uno");
+	insertarAtras(ora3, palabraCopiar("uno"));
 	oracionBorrar(ora3);
 	
 	printf("%s\n","Test oracionImprimir");
@@ -78,9 +77,9 @@ int main (void){
 	void (*funcImprimir)(char*,FILE*);
 	funcImprimir = &palabraImprimir;
 	lista* ora4 = oracionCrear();
-	insertarAtras(ora4, "uno");
-	insertarAtras(ora4, "tres");
-	insertarAtras(ora4, "cinco");
+	insertarAtras(ora4, palabraCopiar("uno"));
+	insertarAtras(ora4, palabraCopiar("tres"));
+	insertarAtras(ora4, palabraCopiar("cinco"));
 	oracionImprimir(ora4,"asd.txt", funcImprimir);
 	oracionBorrar(ora4);
 
@@ -88,13 +87,13 @@ int main (void){
 	printf("\n");
 	
 	lista *miLista = oracionCrear();
-	insertarAtras( miLista, "uno" );
-	insertarAtras( miLista, "do" );
+	insertarAtras( miLista, palabraCopiar("uno") );
+	insertarAtras( miLista, palabraCopiar("do") );
 	
 	lista *miLista2 = oracionCrear();
-	insertarAtras( miLista2, "cuatro" );
-	insertarAtras( miLista2, "tres" );
-	insertarAtras( miLista2, "ochenta y dos");
+	insertarAtras( miLista2, palabraCopiar("cuatro" ));
+	insertarAtras( miLista2, palabraCopiar("tres"));
+	insertarAtras( miLista2, palabraCopiar("ochenta y dos"));
 
 	printf( "LongMedia = %2.5f\n", longitudMedia (miLista));
 	printf( "LongMedia = %2.5f\n", longitudMedia (miLista2));
@@ -110,11 +109,9 @@ int main (void){
 	funcMenor = &palabraMenor;
 
 	lista *miLista3 = oracionCrear();
-	insertarOrdenado(miLista3, "zeta", funcMenor);
-	insertarOrdenado(miLista3, "casa", funcMenor);
-	insertarOrdenado(miLista3, "acasa", funcMenor);
-	insertarOrdenado(miLista3, "bebe", funcMenor);
-		
+	insertarOrdenado(miLista3, palabraCopiar("zeta"), funcMenor);
+	insertarOrdenado(miLista3, palabraCopiar("casa"), funcMenor);
+	
 	oracionImprimir(miLista3,"asd.txt", funcImprimir);
 	oracionBorrar(miLista3);
 
@@ -122,7 +119,55 @@ int main (void){
 	printf("%s\n","Test filtrarPalabra");
 	printf("\n");
 	
+	lista *miLista4 = oracionCrear();
+	insertarAtras(miLista4, palabraCopiar("uno"));
+	insertarAtras(miLista4, palabraCopiar("dos"));
+	insertarAtras(miLista4, palabraCopiar("uno"));
+
+
+	bool (*funcIgual)(char*,char*);
+	funcIgual = &palabraIgual;
+
+
+	filtrarPalabra(miLista4, funcIgual, "dos");
+	oracionImprimir(miLista4,"filt1.txt",funcImprimir);
+	oracionBorrar(miLista4);
+
+	lista *miLista5 = oracionCrear();
+	insertarAtras(miLista5, palabraCopiar("uno"));
+	insertarAtras(miLista5, palabraCopiar("tres"));	
+
+	filtrarPalabra(miLista5, funcIgual, "dos");
+	oracionImprimir(miLista5,"filt2.txt",funcImprimir);
+	oracionBorrar(miLista5);
+
+	lista *miLista6 = oracionCrear();
+
+	filtrarPalabra(miLista6, funcIgual, "dos");
+	oracionImprimir(miLista6,"filt3.txt",funcImprimir);
+	oracionBorrar(miLista6);
+
+	printf("\n");
+	printf("%s\n","Test DecifraMensajeDiabolico");
+	printf("\n");
 	
+	lista *miLista7 = oracionCrear();
+	insertarAtras(miLista7, palabraCopiar("uno"));
+	insertarAtras(miLista7, palabraCopiar("dos"));
+	insertarAtras(miLista7, palabraCopiar("tres"));
+	insertarAtras(miLista7, palabraCopiar("tres"));
+	insertarAtras(miLista7, palabraCopiar(""));
+		
+
+
+	descifrarMensajeDiabolico(miLista7, "asd.txt", palabraImprimir);
+	oracionBorrar(miLista7);	
+	
+/*	
+	insertarOrdenado le pasan la palabra por copia,
+	nodoCrear le pasan la palabra por copia
+	
+*/
 	return 0;
 
 	
