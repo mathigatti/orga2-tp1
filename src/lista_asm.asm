@@ -297,11 +297,7 @@ section .text
 
 ;/** FUNCIONES AVANZADAS **/
 ;-----------------------------------------------------------
-; inputs: rdi, rsi, rdx, rcx, r8, r9
-; preservar: r12, r13, r14, r15, rbx, 
-; la pila: rbp, rsp
-; devolver por rax o xmmo 
-; inputs floats: xmm0, xmm1, ..., xmm7
+
 
 	; float longitudMedia( lista *l );
 	longitudMedia:
@@ -310,6 +306,7 @@ section .text
 	push r12
 	push r13
 	push r14
+	push r15
 	
 	xor r12, r12 ; logitud
 	xor r13, r13 ; contador
@@ -322,24 +319,81 @@ section .text
 		add r12,rax
 		add r13,1
 		mov r14, [r14+OFFSET_SIGUIENTE]
-		
+		jmp .ciclo
 	.fin:
 	pxor xmm0,xmm0
-	
-	mov xmm0,r13
-	divss xmm1
-	
+	pxor xmm1,xmm1
+	cmp r13, 0
+	je .terminar
+	cvtsi2ss xmm0, r12
+	cvtsi2ss xmm1, r13
+	divss xmm0,xmm1
+	.terminar:
+	; falta agregar un if para el caso en que hay cero palabras para no dividir por cero
+	pop r15
 	pop r14
 	pop r13
 	pop r12
 	pop rbp
 	ret
 
+; inputs: rdi, rsi, rdx, rcx, r8, r9
+; preservar: r12, r13, r14, r15, rbx, 
+; la pila: rbp, rsp
+; devolver por rax o xmmo 
+; inputs floats: xmm0, xmm1, ..., xmm7
 
 	; void insertarOrdenado( lista *l, char *palabra, bool (*funcCompararPalabra)(char*,char*) );
 	insertarOrdenado:
-		; COMPLETAR AQUI EL CODIGO
+	push rbp
+	push r13
+	push r14
+	push r15
+	push rbx
+	
+	mov rbp, rsp
+	mov r13, [rdi+OFFSET_PRIMERO] ;guardo nodo actual
+	cmp [rdi+OFFSET_PRIMERO],NULL
+	je .insertarAtras
+	mov r14, rdi ;guardo la lista
+	mov r15, rsi ;guardo la palabra
+	mov rdi, r15
+	mov rsi, [r13+OFFSET_PALABRA]
+	call rdx
+	cmp bit rax,TRUE
+	je .insertarAdelante
+	xor rbx, rbx; si es 1 entonces inserve la palabra si es 0 no.
+	.ciclo:
+	
+	
+	
+	
+	jmp .ciclo
+	
+	
+	cmp byte rbx,1
+	je .fin
+	
+	.insertarAtras:
+	mov rdi, r14
+	mov rsi, r15
+	call insertarAtras
 
+	.insertarAdelante
+	mov rdi,r15
+	call nodoCrear
+	mov [rax+OFFSET_SIGUIENTE],r13
+	mov [r14+OFFSET_PRIMERO], rax
+	
+	
+	.fin:
+	pop rbx
+	pop r15
+	pop r14
+	pop r13
+	pop rbp
+	ret
+	
 	; void filtrarAltaLista( lista *l, bool (*funcCompararPalabra)(char*,char*), char *palabraCmp );
 	filtrarPalabra:
 		; COMPLETAR AQUI EL CODIGO
