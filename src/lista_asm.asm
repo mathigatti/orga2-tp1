@@ -323,9 +323,11 @@ section .text
 		add r13,1
 		mov r14, [r14+OFFSET_SIGUIENTE]
 		
-	.fin:			
-	mov rax,r13
-	div r12
+	.fin:
+	pxor xmm0,xmm0
+	
+	mov xmm0,r13
+	divss xmm1
 	
 	pop r14
 	pop r13
