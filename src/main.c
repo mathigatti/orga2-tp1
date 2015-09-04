@@ -105,16 +105,22 @@ int main (void){
 	printf("%s\n","Test insertarOrdenado ver en asd.txt");
 	printf("\n");
 
-	bool (*funcMenor)(char*,char*);
-	funcMenor = &palabraMenor;
+	bool bul = palabraMenor(palabraCopiar("s"),palabraCopiar("bfas"));
+	if (bul == true){
+		printf("%s\n","True");
+		}
+	else printf("%s\n","False");
+/*	
 
 	lista *miLista3 = oracionCrear();
-	insertarOrdenado(miLista3, palabraCopiar("zeta"), funcMenor);
-	insertarOrdenado(miLista3, palabraCopiar("casa"), funcMenor);
+	insertarOrdenado(miLista3, palabraCopiar("zeta"), palabraMenor);
+	insertarOrdenado(miLista3, palabraCopiar("casa"), palabraMenor);
+	
+	
 	
 	oracionImprimir(miLista3,"asd.txt", funcImprimir);
 	oracionBorrar(miLista3);
-
+*/
 	printf("\n");
 	printf("%s\n","Test filtrarPalabra");
 	printf("\n");
@@ -160,14 +166,9 @@ int main (void){
 		
 
 
-	descifrarMensajeDiabolico(miLista7, "asd.txt", palabraImprimir);
+//	descifrarMensajeDiabolico(miLista7, "asd.txt", palabraImprimir);
 	oracionBorrar(miLista7);	
-	
-/*	
-	insertarOrdenado le pasan la palabra por copia,
-	nodoCrear le pasan la palabra por copia
-	
-*/
+
 	return 0;
 
 	
