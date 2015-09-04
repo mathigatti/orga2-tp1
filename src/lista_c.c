@@ -30,6 +30,17 @@ void insertarAtras( lista *l, char *palabra ){
 
 
 
+
+
+//	void filtrarPalabra( lista *l, bool (*funcCompararPalabra)(char*,char*), char *palabraCmp );
+//	void descifrarMensajeDiabolico( lista *l, char *archivo, void (*funcImpPbr)(char*,FILE* ) );
+
+
+
+// Mis funciones
+
+/*
+
 void insertarOrdenado( lista *l, char *palabra, bool (*funcCompararPalabra)(char*,char*) ){
 	nodo* actual = l->primero;
 	if(actual == NULL){
@@ -59,15 +70,6 @@ void insertarOrdenado( lista *l, char *palabra, bool (*funcCompararPalabra)(char
 	}
 }
 
-
-//	void filtrarPalabra( lista *l, bool (*funcCompararPalabra)(char*,char*), char *palabraCmp );
-//	void descifrarMensajeDiabolico( lista *l, char *archivo, void (*funcImpPbr)(char*,FILE* ) );
-
-
-
-// Mis funciones
-
-/*
 
 float longitudMedia( lista *l ){
 	nodo* actual = l->primero;

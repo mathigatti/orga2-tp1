@@ -36,8 +36,8 @@ extern void oracionImprimir( lista *l, char *archivo, void (*funcImprimirPalabra
 
 /** Funciones Avanzadas **/
 
-	float longitudMedia( lista *l );
-	void insertarOrdenado( lista *l, char *palabra, bool (*funcCompararPalabra)(char*,char*) );
+extern	float longitudMedia( lista *l );
+extern	void insertarOrdenado( lista *l, char *palabra, bool (*funcCompararPalabra)(char*,char*) );
 	void filtrarPalabra( lista *l, bool (*funcCompararPalabra)(char*,char*), char *palabraCmp );
 	void descifrarMensajeDiabolico( lista *l, char *archivo, void (*funcImpPbr)(char*,FILE* ) );
 

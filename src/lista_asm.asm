@@ -18,7 +18,7 @@
 
 ; AVANZADAS
 	global longitudMedia
-;	global insertarOrdenado
+	global insertarOrdenado
 ;	global filtrarPalabra
 ;	global descifrarMensajeDiabolico
 
@@ -329,7 +329,6 @@ section .text
 	cvtsi2ss xmm1, r13
 	divss xmm0,xmm1
 	.terminar:
-	; falta agregar un if para el caso en que hay cero palabras para no dividir por cero
 	pop r15
 	pop r14
 	pop r13
@@ -344,53 +343,75 @@ section .text
 ; inputs floats: xmm0, xmm1, ..., xmm7
 
 	; void insertarOrdenado( lista *l, char *palabra, bool (*funcCompararPalabra)(char*,char*) );
-	insertarOrdenado:
+insertarOrdenado:
 	push rbp
+	mov rbp, rsp
+	push r12
 	push r13
 	push r14
 	push r15
 	push rbx
+	sub rsp,8
 	
-	mov rbp, rsp
+	mov r12, rdx ;guardo la funcion
 	mov r13, [rdi+OFFSET_PRIMERO] ;guardo nodo actual
-	cmp [rdi+OFFSET_PRIMERO],NULL
-	je .insertarAtras
 	mov r14, rdi ;guardo la lista
 	mov r15, rsi ;guardo la palabra
+
+	cmp r13,NULL
+	je .insertarAtras
 	mov rdi, r15
 	mov rsi, [r13+OFFSET_PALABRA]
-	call rdx
-	cmp bit rax,TRUE
+	call r12
+	cmp rax, TRUE
 	je .insertarAdelante
-	xor rbx, rbx; si es 1 entonces inserve la palabra si es 0 no.
+	xor rbx, rbx; si es 1 entonces inserté la palabra si es 0 no.
 	.ciclo:
+	cmp rbx, 1
+	je .fin
+	mov rdi, [r13+OFFSET_SIGUIENTE]
+	cmp rdi,NULL
+	je .insertarAtras
 	
-	
-	
-	
+	mov rdi, r15
+	mov rsi, [r13+OFFSET_SIGUIENTE]
+	mov rsi, [rsi+OFFSET_PALABRA]
+	call r12
+	cmp rax, FALSE
+	je .sigociclo
+	mov rdi, r15
+	call nodoCrear
+	mov rdi,[r13+OFFSET_SIGUIENTE]
+	mov [rax+OFFSET_SIGUIENTE],rdi
+	mov [r13+OFFSET_SIGUIENTE],rax
+	mov rbx,1
+	.sigociclo:
+	mov r13,[r13+OFFSET_SIGUIENTE]
 	jmp .ciclo
 	
 	
-	cmp byte rbx,1
+	cmp rbx,1
 	je .fin
 	
 	.insertarAtras:
 	mov rdi, r14
 	mov rsi, r15
 	call insertarAtras
-
-	.insertarAdelante
+	jmp .fin
+	
+	.insertarAdelante:
 	mov rdi,r15
 	call nodoCrear
 	mov [rax+OFFSET_SIGUIENTE],r13
 	mov [r14+OFFSET_PRIMERO], rax
-	
-	
+		
 	.fin:
+	add rsp,8
 	pop rbx
 	pop r15
 	pop r14
 	pop r13
+	pop r12
 	pop rbp
 	ret
 	
