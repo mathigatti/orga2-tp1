@@ -29,7 +29,7 @@ longitudMedia: 0.00000
 longitudMedia: 4.00000
 >>>>>>>>>>>>>>>> PROBANDO PALABRA-FILTRAR
 hola
+<oracionVacia>
 >>>>>>>>>>>>>>>> PROBANDO MENSAJE DIABOLICO
 777iPmA888
 <sinMensajeDiabolico>
-

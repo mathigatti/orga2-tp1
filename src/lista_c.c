@@ -33,6 +33,13 @@ void fTest(char *p){
 }
 
 
+
+
+
+// Mis funciones
+
+/*
+
 void insertarOrdenado( lista *l, char *palabra, bool (*funcCompararPalabra)(char*,char*) ){
 	nodo* actual = l->primero;
 	if(actual == NULL){
@@ -61,12 +68,6 @@ void insertarOrdenado( lista *l, char *palabra, bool (*funcCompararPalabra)(char
 		}
 	}
 }
-
-
-// Mis funciones
-
-/*
-
 
 void filtrarPalabra( lista *l, bool (*funcCompararPalabra)(char*,char*), char *palabraCmp ){
 	nodo* actual = l->primero;

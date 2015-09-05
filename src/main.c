@@ -104,12 +104,17 @@ int main (void){
 	printf("\n");
 	printf("%s\n","Test insertarOrdenado ver en asd.txt");
 	printf("\n");
-
-	bool bul = palabraMenor(palabraCopiar("s"),palabraCopiar("bfas"));
+	
+	char* s1 = palabraCopiar("s");
+	char* s2 = palabraCopiar("bfas");
+	bool bul = palabraMenor(s1,s2);
 	if (bul == true){
 		printf("%s\n","True");
 		}
 	else printf("%s\n","False");
+	
+	free(s2);
+	free(s1);
 /*	
 
 	lista *miLista3 = oracionCrear();

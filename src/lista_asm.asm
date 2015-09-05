@@ -18,7 +18,7 @@
 
 ; AVANZADAS
 	global longitudMedia
-;	global insertarOrdenado
+	global insertarOrdenado
 	global filtrarPalabra
 	global descifrarMensajeDiabolico
 
@@ -53,12 +53,11 @@ section .rodata
 
 
 section .data
-	msg1: DB '%s', 10, 0
-	msg2: DB 'a',0
-	msg3: DB '<sinMensajeDiabolico>', 10, 0
-
-
-
+	msg1: DB '%s', 10, 0	;imprimo string con salto de linea y fin de linea
+	msg2: DB 'a',0			;modo append para fopen
+	msg3: DB '<sinMensajeDiabolico>',0
+	msg4: DB '<oracionVacia>',0
+	
 
 section .text
 
@@ -97,7 +96,7 @@ section .text
 		je .terminop1
 		cmp byte [rsi],0
 		je .fin
-		mov rdx,[rsi]
+		mov dl,[rsi]
 		cmp byte [rdi], dl 
 		jg .fin
 		jl .true
@@ -144,13 +143,11 @@ section .text
 	palabraImprimir:
 		push rbp
 		mov rbp, rsp
-		
 		mov rdx, rdi
 		mov rdi, rsi
 		mov rsi, msg1
 		mov rax, 0
 		call fprintf
-		
 		pop rbp
 		ret
 		
@@ -185,7 +182,6 @@ section .text
 		pop r14
 		pop rbp
 		ret ;en rax esta el puntero a la palabra, que ni lo toque
-
 
 ;/** FUNCIONES DE LISTA Y NODO **/
 ;-----------------------------------------------------------
@@ -284,17 +280,23 @@ section .text
 		mov r13, [rdi + OFFSET_PRIMERO] ;r13 = puntero al primero
 		mov rdi, rsi
 		mov rsi, msg2
-		mov r15, rdx ;guardo la funcionImprimir
+		mov r15, rdx ; r15 = funcionImprimir
 		call fopen
-		mov r14,rax ;guardo el puntero al archivo
+		mov r14,rax ; r14 = el puntero al archivo
+		cmp r13,NULL
+		je .vacia
 		.ciclo:
-			cmp r13,NULL
-			je .fin
 			mov rdi, [r13+OFFSET_PALABRA]
 			mov rsi, r14
 			call r15
 			mov r13, [r13+OFFSET_SIGUIENTE]
+			cmp r13,NULL
+			je .fin
 			jmp .ciclo
+		.vacia:
+			mov rdi,msg4
+			mov rsi,r14
+			call r15
 		.fin:
 			mov rdi,r14
 			call fclose
