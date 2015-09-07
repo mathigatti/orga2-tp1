@@ -1,3 +1,9 @@
+; RECORDATORIOS
+; inputs: rdi, rsi, rdx, rcx, r8, r9
+; preservar: r12, r13, r14, r15, rbx, 
+; la pila: rbp, rsp
+; devolver cosas por rax o xmmo 
+; inputs floats: xmm0, xmm1, ..., xmm7
 
 
 ; PALABRA
@@ -53,7 +59,7 @@ section .rodata
 
 
 section .data
-	msg1: DB '%s', 10, 0	;imprimo string con salto de linea y fin de linea
+	msg1: DB '%s', LF, 0	;imprimo string con salto de linea y fin de linea
 	msg2: DB 'a',0			;modo append para fopen
 	msg3: DB '<sinMensajeDiabolico>',0
 	msg4: DB '<oracionVacia>',0
@@ -477,14 +483,6 @@ insertarOrdenado:
 	pop rbp
 	ret
 
-
-
-; inputs: rdi, rsi, rdx, rcx, r8, r9
-; preservar: r12, r13, r14, r15, rbx, 
-; la pila: rbp, rsp
-; devolver por rax o xmmo 
-; inputs floats: xmm0, xmm1, ..., xmm7
-
 	; void descifrarMensajeDiabolico( lista *l, char *archivo, void (*funcImpPbr)(char*,FILE* ) );
 	descifrarMensajeDiabolico:
 	push rbp
@@ -499,7 +497,7 @@ insertarOrdenado:
 	mov r12, rdi
 	mov r13, rsi
 	mov r14, rdx
-	mov rbx,[r12+OFFSET_PRIMERO]
+	mov rbx, [r12+OFFSET_PRIMERO]
 	xor r15, r15
 	mov r12, rsp
 
@@ -511,10 +509,10 @@ insertarOrdenado:
 	
 	cmp rbx,NULL
 	je .sinMensaje
-	.ciclo:
+	.ciclo: ;arranco el ciclo con la pila alineada
 	mov rsi, [rbx+OFFSET_PALABRA]
 	push rsi 
-	add r15,1
+	add r15,1 ;cuento cuantos push hago
 	mov rbx,[rbx+OFFSET_SIGUIENTE]
 	cmp rbx,NULL
 	je .imprimir
@@ -523,7 +521,7 @@ insertarOrdenado:
 	.imprimir:
 	cmp r12,rsp
 	je .fin
-	test r15,1 ; ver si es par, o sea si esta alineada la pila
+	test r15,1 ; veo si es impar, lo cual implicaria que la pila no esta alineada
 	je .noAlineada
 	.alineada:
 	mov rdi,[rsp]
@@ -556,5 +554,4 @@ insertarOrdenado:
 	pop r13
 	pop r12
 	pop rbp
-	ret		
-		
+	ret
