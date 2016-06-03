@@ -1,4 +1,0 @@
-Mensaje que deberia imprimirse
-uno
-tres
-cinco
